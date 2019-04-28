@@ -1,5 +1,9 @@
 package com.example.uvrisk;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +18,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class MainActivity extends AppCompatActivity {
+    private FusedLocationProviderClient client;
     private static final String APIKEY = "ab2c57df8757b2533797c8412820d3b9";
     private static RequestQueue requestQueue;
     private static String LOG = "UVRISK";
@@ -31,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestQueue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_main);
+        requestPermission();
+        client = LocationServices.getFusedLocationProviderClient(this);
         Button button = findViewById(R.id.button);
         final EditText lat = findViewById(R.id.editText);
         final EditText lon = findViewById(R.id.editText2);
@@ -38,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         error.setVisibility(View.INVISIBLE);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view){
+
                 error.setVisibility(View.INVISIBLE);
                 double latValue = 0;
                 double lonValue = 0;
@@ -63,6 +76,20 @@ public class MainActivity extends AppCompatActivity {
                     error.setVisibility(View.VISIBLE);
                 }
                 else {
+                    if (latValue == 0 && lonValue ==0) {
+                        if (ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            Log.d(LOG,"HERE");
+                            return;
+                        }
+                        client.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null) {
+                                    findUVValue(location.getLatitude(), location.getLongitude());
+                                }
+                            }
+                        });
+                    }
                     findUVValue(latValue, lonValue);
                 }
             }
@@ -100,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.d(LOG,"JSON error");
         }
+    }
+    private void requestPermission(){
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 
 }
