@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String APIKEY = "HARI PUT THE API KEY HERE!!!";
+    private static final String APIKEY = "ab2c57df8757b2533797c8412820d3b9";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
