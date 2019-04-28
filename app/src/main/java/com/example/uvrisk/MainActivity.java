@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private static final String APIKEY = "ab2c57df8757b2533797c8412820d3b9";
+    /*
+    URL FOR API CALL http://api.openweathermap.org/data/2.5/uvi?appid={appid}&lat={lat}&lon={lon}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
