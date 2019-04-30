@@ -2,6 +2,7 @@ package com.example.uvrisk;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -123,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             TextView textView = findViewById(R.id.textView);
             Log.d(LOG,response.get("value").toString());
+
             textView.setText("UV Risk: " + response.get("value").toString());
+            suggest(Double.parseDouble(response.get("value").toString()));
         } catch (JSONException e) {
             Log.d(LOG,"JSON error");
         }
@@ -131,5 +134,25 @@ public class MainActivity extends AppCompatActivity {
     private void requestPermission(){
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
     }
+    private void suggest(double UV) {
+        TextView textView = findViewById(R.id.suggestion);
+        if (UV < 2.9) {
+            textView.setTextColor(Color.GREEN);
+            textView.setText("LOW: Wear sunglasses on bright days. If you burn easily, cover up and use broad spectrum SPF 30+ sunscreen. Bright surfaces, such as sand, water, and snow, will increase UV exposure.");
+        } else if (UV < 5.9) {
+            textView.setTextColor(Color.GREEN);
+            textView.setText("MEDIUM: Stay in shade near midday when the sun is strongest. If outdoors, wear sun protective clothing, a wide-brimmed hat, and UV-blocking sunglasses. Generously apply broad spectrum SPF 30+ sunscreen every 2 hours, even on cloudy days, and after swimming or sweating. Bright surfaces, such as sand, water, and snow, will increase UV exposure.");
+        } else if (UV < 7.9) {
+            textView.setTextColor(Color.RED);
+            textView.setText("HIGH: Reduce time in the sun between 10 a.m. and 4 p.m. If outdoors, seek shade and wear sun protective clothing, a wide-brimmed hat, and UV-blocking sunglasses. Generously apply broad spectrum SPF 30+ sunscreen every 2 hours, even on cloudy days, and after swimming or sweating. Bright surfaces, such as sand, water, and snow, will increase UV exposure.");
+        } else if (UV < 10.9) {
+            textView.setTextColor(Color.RED);
+            textView.setText("VERY HIGH: Minimize sun exposure between 10 a.m. and 4 p.m. If outdoors, seek shade and wear sun protective clothing, a wide-brimmed hat, and UV-blocking sunglasses. Generously apply broad spectrum SPF 30+ sunscreen every 2 hours, even on cloudy days, and after swimming or sweating. Bright surfaces, such as sand, water, and snow, will increase UV exposure.");
+        } else {
+            textView.setTextColor(Color.RED);
+        textView.setText("EXTREME: Try to avoid sun exposure between 10 a.m. and 4 p.m. If outdoors, seek shade and wear sun protective clothing, a wide-brimmed hat, and UV-blocking sunglasses. Generously apply broad spectrum SPF 30+ sunscreen every 2 hours, even on cloudy days, and after swimming or sweating. Bright surfaces, such as sand, water, and snow, will increase UV exposure.");
+        }
+        }
 
-}
+
+        }
